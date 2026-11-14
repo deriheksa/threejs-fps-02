@@ -40,6 +40,7 @@ export function makeDisplay() {
   const weaponName = el('weapon-name');
   const money = el('money');
   const timer = el('timer');
+  const roundLabel = el('round-label');
   const scoreV = el('score-v');
   const scoreE = el('score-e');
   const aliveV = el('alive-v');
@@ -96,6 +97,9 @@ export function makeDisplay() {
     setTimer(seconds) {
       const total = Math.max(0, Math.ceil(seconds));
       setText(timer, 'timer', `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`);
+    },
+    setRound(round, max) {
+      setText(roundLabel, 'round', `ROUND ${round}/${max}`);
     },
     setScore(v, e) {
       setText(scoreV, 'sv', String(v));

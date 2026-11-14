@@ -98,9 +98,9 @@ export function buildArena(scene) {
   sitePlate(15, -11, PALETTE.accent);
 
   // Dusk light: a warm low key from the west, a cool fill from the east, sky gradient.
-  const sky = new THREE.HemisphereLight(new THREE.Color('#8a7a66'), new THREE.Color(PALETTE.canvas), 1.0);
+  const sky = new THREE.HemisphereLight(new THREE.Color('#a08a70'), new THREE.Color(PALETTE.canvas), 1.7);
   scene.add(sky);
-  const key = new THREE.DirectionalLight(new THREE.Color('#ffb066'), 2.4);
+  const key = new THREE.DirectionalLight(new THREE.Color('#ffb066'), 3.4);
   key.position.set(-14, 16, 10);
   key.target.position.set(0, 0, -4);
   key.castShadow = true;
@@ -112,7 +112,7 @@ export function buildArena(scene) {
   key.shadow.camera.far = 60;
   key.shadow.bias = -0.0006;
   scene.add(key, key.target);
-  const fill = new THREE.DirectionalLight(new THREE.Color('#6e86a8'), 0.5);
+  const fill = new THREE.DirectionalLight(new THREE.Color('#6e86a8'), 0.9);
   fill.position.set(12, 10, 12);
   scene.add(fill);
 

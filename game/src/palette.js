@@ -11,7 +11,7 @@ export const PALETTE = {
   ally: '#5aa2ff',
   foe: '#ff4a38',
   money: '#ffd24a',
-  ground: '#2b2118',
+  ground: '#3d2f1f',
   container: '#7a4a28',
   containerB: '#4a5a6e',
   crate: '#6b5232',

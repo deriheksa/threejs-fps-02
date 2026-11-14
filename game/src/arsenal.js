@@ -59,7 +59,8 @@ export function makeGun(camera) {
   const pale = new THREE.MeshStandardMaterial({ color: new THREE.Color(PALETTE.ink), roughness: 0.45, metalness: 0.4 });
 
   const rig = new THREE.Group();
-  rig.position.set(0.24, -0.2, -0.42);
+  rig.position.set(0.26, -0.23, -0.45);
+  rig.scale.setScalar(0.72);
   camera.add(rig);
 
   const flash = new THREE.Mesh(
@@ -94,7 +95,7 @@ export function makeGun(camera) {
     state.cooldown = Math.max(0, state.cooldown - dt);
     state.flash = Math.max(0, state.flash - dt);
     state.kick += (0 - state.kick) * Math.min(1, dt * 14);
-    rig.position.z = -0.42 + state.kick;
+    rig.position.z = -0.45 + state.kick;
     rig.rotation.x = state.kick * 2.2;
     flash.visible = state.flash > 0;
     flash.rotation.z = state.flash * 30;

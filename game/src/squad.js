@@ -27,7 +27,7 @@ export function makeBot(scene, arena, side, index, start, rng) {
   const weapon = ARSENAL[weaponKey];
 
   const fighter = makeFighter(arena.colliders, start);
-  fighter.body.yaw = isEmber ? 0 : Math.PI;
+  fighter.body.yaw = isEmber ? Math.PI : 0;
 
   // The soldier: legs, torso, head and a gun, coloured by team. The head and torso are
   // the hit meshes; their userData tells a ray what it struck.
@@ -110,7 +110,7 @@ export function makeBot(scene, arena, side, index, start, rng) {
     bot.defuseLeft = 0;
     fighter.body.position.copy(startPos);
     fighter.body.velocity.set(0, 0, 0);
-    fighter.body.yaw = isEmber ? 0 : Math.PI;
+    fighter.body.yaw = isEmber ? Math.PI : 0;
     fighter.body.pitch = 0;
     group.position.copy(startPos);
     group.rotation.set(0, fighter.body.yaw, 0);
@@ -135,6 +135,10 @@ export function makeBot(scene, arena, side, index, start, rng) {
     }
     return false;
   }
+
+  // The internal state object is what hit meshes and the world pass around, so it
+  // carries the damage function the wrapper also exposes.
+  bot.damageFn = damage;
 
   // Face a point on the ground, then walk forward toward it.
   function walkToward(point, speedScale = 1) {
@@ -308,7 +312,7 @@ export function makeBot(scene, arena, side, index, start, rng) {
   }
 
   return {
-    bot, reset, damage, update,
+    bot, fighter, hitMeshes, reset, damage, update,
     get alive() { return bot.alive; },
     get hp() { return bot.hp; },
     get name() { return name; },

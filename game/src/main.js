@@ -25,7 +25,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'hi
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 document.getElementById('game').appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
@@ -172,7 +172,7 @@ function hurtPlayer(amount) {
 }
 
 function hurtBot(bot, amount, part, shooterName) {
-  const killed = bot.damage(amount, part);
+  const killed = bot.damageFn(amount, part);
   if (killed) {
     display.feed(`${shooterName} eliminated ${bot.name}`);
     if (shooterName === 'You') addKill();
@@ -187,7 +187,8 @@ function fireShot(shooter, from, direction, weapon, aimedHead) {
   raycaster.set(from, direction);
   const meshes = arena.shootables.slice();
   for (const fighter of fighters) {
-    if (fighter.isPlayer || fighter === shooter) continue;
+    if (fighter.isPlayer) continue;
+    if (fighter.bot === shooter) continue; // a bot never shoots its own body
     if (fighter.alive) meshes.push(...fighter.hitMeshes);
   }
   const hits = raycaster.intersectObjects(meshes, false);
@@ -339,7 +340,7 @@ function assignRoutes() {
 function resetPositions() {
   playerFighter.body.position.copy(arena.spawns.vanguard[0]);
   playerFighter.body.velocity.set(0, 0, 0);
-  playerFighter.body.yaw = Math.PI;
+  playerFighter.body.yaw = 0;
   playerFighter.body.pitch = 0;
   player.hp = 100;
   player.armor = matchState.kevlar;
@@ -370,6 +371,7 @@ function syncHud() {
   display.setWeapon(gun.def.name);
   display.setMoney(matchState.money);
   display.setTimer(matchState.phaseLeft);
+  display.setRound(matchState.round, 9);
   display.setScore(matchState.score.vanguard, matchState.score.ember);
   const emberAlive = squads.enemies.filter((bot) => bot.alive).length;
   const vanguardAlive = (player.alive ? 1 : 0) + squads.allies.filter((bot) => bot.alive).length;
@@ -639,7 +641,7 @@ function runShot(name) {
   display.hideOverlay();
   display.showBuy(false, matchState.money, matchState.owned, matchState.grenades, matchState.kevlar);
   playerFighter.body.pitch = 0;
-  playerFighter.body.yaw = Math.PI;
+  playerFighter.body.yaw = 0;
   resetPositions();
   goLive();
   matchState.phaseLeft = ROUND_SECONDS;
@@ -701,5 +703,14 @@ display.setAmmo(gun.state.mag, gun.state.reserve);
 display.setScore(0, 0);
 display.showBuy(true, matchState.money, matchState.owned, matchState.grenades, matchState.kevlar);
 syncCamera();
+
+// A small read-only handle for live testing: round state, the player, and both squads.
+window.__ember = {
+  match: matchState,
+  player,
+  allies: squads.allies,
+  enemies: squads.enemies,
+};
+
 if (shot) runShot(shot);
 else requestAnimationFrame(frame);
